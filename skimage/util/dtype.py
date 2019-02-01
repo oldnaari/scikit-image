@@ -189,7 +189,7 @@ def convert(image, dtype, force_copy=False, uniform=False):
             # downscale with precision loss
             prec_loss()
             if copy:
-                b = np.empty(a.shape, _dtype_bits(kind, m))
+                b = np.empty_like(a, _dtype_bits(kind, m))
                 np.floor_divide(a, 2**(n - m), out=b, dtype=a.dtype,
                                 casting='unsafe')
                 return b
@@ -199,7 +199,7 @@ def convert(image, dtype, force_copy=False, uniform=False):
         elif m % n == 0:
             # exact upscale to a multiple of `n` bits
             if copy:
-                b = np.empty(a.shape, _dtype_bits(kind, m))
+                b = np.empty_like(a, _dtype_bits(kind, m))
                 np.multiply(a, (2**m - 1) // (2**n - 1), out=b, dtype=b.dtype)
                 return b
             else:
@@ -212,7 +212,7 @@ def convert(image, dtype, force_copy=False, uniform=False):
             prec_loss()
             o = (m // n + 1) * n
             if copy:
-                b = np.empty(a.shape, _dtype_bits(kind, o))
+                b = np.empty_like(a, _dtype_bits(kind, o))
                 np.multiply(a, (2**o - 1) // (2**n - 1), out=b, dtype=b.dtype)
                 b //= 2**(o - m)
                 return b
@@ -317,7 +317,7 @@ def convert(image, dtype, force_copy=False, uniform=False):
     if kind_out == 'u':
         sign_loss()
         image = _scale(image, 8 * itemsize_in - 1, 8 * itemsize_out)
-        result = np.empty(image.shape, dtype_out)
+        result = np.empty_like(image, dtype_out)
         np.maximum(image, 0, out=result, dtype=image.dtype, casting='unsafe')
         return result
 
